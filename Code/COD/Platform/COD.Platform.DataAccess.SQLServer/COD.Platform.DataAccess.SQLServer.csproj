@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0-preview2-26905-02" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\COD.Platform.DataAccess\COD.Platform.DataAccess.csproj" />
+    <ProjectReference Include="..\COD.Platform.Logging.Core\COD.Platform.Logging.csproj" />
+  </ItemGroup>
+
+</Project>

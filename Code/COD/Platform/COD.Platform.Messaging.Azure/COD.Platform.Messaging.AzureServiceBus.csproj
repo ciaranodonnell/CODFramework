@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Management.ServiceBus" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\COD.Platform.Logging.Core\COD.Platform.Logging.csproj" />
+    <ProjectReference Include="..\COD.Platform.Messaging\COD.Platform.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>

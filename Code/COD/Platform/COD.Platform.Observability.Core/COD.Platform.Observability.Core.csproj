@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\COD.Platform.Messaging\COD.Platform.Messaging.csproj" />
+    <ProjectReference Include="..\COD.Platform.Observability.Interfaces\COD.Platform.Observability.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

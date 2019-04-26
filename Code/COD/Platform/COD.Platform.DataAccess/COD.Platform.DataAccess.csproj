@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>CiaranODonnell</Authors>
+    <Company>AVANADE</Company>
+    <Product>CODE Framework</Product>
+    <Copyright>2019 CiaranODonnell</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://wannabedeveloper.visualstudio.com/COD/</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\COD.Platform.Logging.Core\COD.Platform.Logging.csproj" />
+  </ItemGroup>
+
+</Project>
