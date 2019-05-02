@@ -13,13 +13,15 @@ namespace COD.Platform.Configuration.Basic
         [DebuggerStepThrough]
         public BasicConfiguration(ILoggingService logFactory) : base(logFactory)
         {
-            this.log = logFactory.GetCurrentClassLogger();
+        }
+
+        [DebuggerStepThrough]
+        public BasicConfiguration() : base()
+        {
         }
 
         Dictionary<string, string> values = new Dictionary<string, string>();
-        private ILog log;
-
-
+        
         [DebuggerStepThrough]
         public void AddConfigurationOption(string key, string value)
         {
