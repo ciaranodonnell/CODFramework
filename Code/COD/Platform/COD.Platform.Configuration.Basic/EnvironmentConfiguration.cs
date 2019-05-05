@@ -10,6 +10,8 @@ namespace COD.Platform.Configuration.Basic
 
         public EnvironmentConfiguration(Logging.Core.ILoggingService logFactory) : base(logFactory)
         { }
+        public EnvironmentConfiguration() : base()
+        { }
 
         public override string GetString(string name, string defaultValue = null)
         {

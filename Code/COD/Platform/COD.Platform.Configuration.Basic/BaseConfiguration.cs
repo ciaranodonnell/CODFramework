@@ -16,6 +16,11 @@ namespace COD.Platform.Configuration.Basic
             this.log = logFactory.GetCurrentClassLogger();
         }
 
+        public BaseConfiguration()
+        {
+            
+        }
+
 
         [DebuggerStepThrough]
         public bool GetBool(string name, bool defaultValue = false)
@@ -34,7 +39,7 @@ namespace COD.Platform.Configuration.Basic
 
                     string errorMessage = $"The configuration value is NOT convertible to a boolean. Name = \"{ name }\", value = \"{value}\"";
 
-                    log.Debug(errorMessage);
+                    log?.Debug(errorMessage);
 
                     //Need to decide if this should be default or exception
                     //Choosing default value now perhaps supports the "Convention over Configuration Pattern"
@@ -66,7 +71,7 @@ namespace COD.Platform.Configuration.Basic
                 {
                     string errorMessage = $"The configuration value is NOT convertible to a int. Name = \"{ name }\", value = \"{value}\"";
 
-                    log.Debug(errorMessage);
+                    log?.Debug(errorMessage);
 
                     //Need to decide if this should be default or exception
                     //Choosing default value now perhaps supports the "Convention over Configuration Pattern"

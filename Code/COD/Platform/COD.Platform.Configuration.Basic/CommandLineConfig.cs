@@ -13,8 +13,12 @@ namespace COD.Platform.Configuration.Basic
         public CommandLineConfig(ILoggingService logFactory, string[] args) : base(logFactory)
         {
             config = new ConfigurationBuilder().AddCommandLine(args).Build();
-            
 
+
+        }
+        public CommandLineConfig(string[] args) : base()
+        {
+            config = new ConfigurationBuilder().AddCommandLine(args).Build();
         }
 
         public override string GetString(string name, string defaultValue = null)
