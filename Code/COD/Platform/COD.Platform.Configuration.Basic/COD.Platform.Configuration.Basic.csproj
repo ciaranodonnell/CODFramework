@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\COD.Platform.Framework\COD.Platform.Framework.csproj" />
     <ProjectReference Include="..\COD.Platform.Logging.Core\COD.Platform.Logging.csproj" />
   </ItemGroup>
 

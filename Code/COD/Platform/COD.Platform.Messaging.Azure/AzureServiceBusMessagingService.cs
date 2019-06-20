@@ -48,5 +48,11 @@ namespace COD.Platform.Messaging.AzureServiceBus
         {
             return new AzureServiceBusTopicClient<TContent>(logging, asbConnectionString, topicName, subscriptionQueueName, options, serializer);
         }
+
+        internal void DeleteSubscription(string subscriptionName, string topicPath)
+        {
+            var client = new Microsoft.Azure.ServiceBus.Management.ManagementClient(asbConnectionString);
+            client.DeleteSubscriptionAsync(topicPath, subscriptionName).Wait();
+        }
     }
 }
