@@ -10,7 +10,7 @@ namespace COD.Platform.Framework.UnitTest
     {
 
         [TestMethod]
-        public void Test_StringManipulatorAddString()
+        public void Test_StringManipulator_AddString()
         {
             StringManipulator m = new StringManipulator();
             m.Add("hello");
@@ -20,7 +20,7 @@ namespace COD.Platform.Framework.UnitTest
 
 
         [TestMethod]
-        public void Test_StringManipulatorAddTwoStrings()
+        public void Test_StringManipulator_AddTwoStrings()
         {
             StringManipulator m = new StringManipulator();
             m.Add("hello");
@@ -32,11 +32,22 @@ namespace COD.Platform.Framework.UnitTest
 
 
         [TestMethod]
-        public void Test_StringManipulatorInsertString()
+        public void Test_StringManipulator_InsertString()
         {
             StringManipulator m = new StringManipulator();
             m.Add("hello");
             m.Add("  world");
+            m.Insert("cruel", 6);
+            Assert.AreEqual("hello cruel world", m.ToString());
+        }
+
+
+        [TestMethod]
+        public void Test_StringManipulator_InsertStringInBetweenSections()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello ");
+            m.Add(" world");
             m.Insert("cruel", 6);
             Assert.AreEqual("hello cruel world", m.ToString());
         }
@@ -51,6 +62,27 @@ namespace COD.Platform.Framework.UnitTest
             m.Remove("cruel");
 
             Assert.AreEqual("hello  world", m.ToString());
+        }
+
+        [TestMethod]
+        public void Test_StringManipulator_RemoveSingleStringInsideSection()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cruel world");
+            m.Remove("cruel");
+
+            Assert.AreEqual("hello  world", m.ToString());
+        }
+
+
+        [TestMethod]
+        public void Test_StringManipulator_RemoveTwoStringsInsideSection()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cruel world");
+            m.Remove("l");
+
+            Assert.AreEqual("heo crue word", m.ToString());
         }
 
         [TestMethod]

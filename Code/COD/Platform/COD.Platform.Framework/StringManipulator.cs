@@ -102,8 +102,9 @@ namespace COD.Platform.Framework
             bool isFinding = false;
             int globalIndexOf = -1;
             int sectionsToGoBack = 0;
-
+            var emptynodes = new List<LinkedListNode<Section>>();
             var node = this.sections.First;
+
             while (node != null)
             {
                 var section = node.Value;
@@ -141,8 +142,10 @@ namespace COD.Platform.Framework
                             if (foundLetters == value.Length)
                             {
                                 var newStart = (foundAt + foundLetters);
-                                sections.AddAfter(node, new Section(section.Base, newStart, section.Length - newStart));
+                                sections.AddAfter(node, new Section(section.Base, newStart, (section.Start + section.Length) - newStart));
                                 section.Length = foundAt - section.Start;
+                                if (section.Length == 0) emptynodes.Add(node);
+                                isFinding = false;
                             }
                             else
                             {
@@ -158,7 +161,7 @@ namespace COD.Platform.Framework
                     int pointerInThisSection = section.Start;
                     while (isFinding
                             && foundLetters < value.Length
-                            && (pointerInThisSection) < section.Length )
+                            && (pointerInThisSection) < section.Length)
                     {
                         if (sbase[section.Start + pointerInThisSection] != value[foundLetters])
                         {
@@ -178,7 +181,7 @@ namespace COD.Platform.Framework
                             //trim the beginning of this sections
                             section.Start += pointerInThisSection;
                             section.Length -= pointerInThisSection;
-
+                            if (section.Length == 0) emptynodes.Add(node);
                             int charsInFirstSection = foundLetters - pointerInThisSection;
                             for (int x = 1; x < sectionsToGoBack; x++)
                             {
@@ -198,6 +201,12 @@ namespace COD.Platform.Framework
                     }
                 }
                 node = node.Next;
+            }
+
+
+            if (emptynodes.Count > 0)
+            {
+                foreach (var enode in emptynodes) sections.Remove(enode);
             }
         }
 
