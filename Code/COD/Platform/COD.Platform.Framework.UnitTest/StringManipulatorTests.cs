@@ -97,5 +97,26 @@ namespace COD.Platform.Framework.UnitTest
             Assert.AreEqual("hello  world", m.ToString());
         }
 
+
+        [TestMethod]
+        public void Test_StringManipulator_ReplaceSingle()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cruel world");
+            m.Remove("cruel", "big");
+
+            Assert.AreEqual("hello big world", m.ToString());
+        }
+
+
+        [TestMethod]
+        public void Test_StringManipulator_ReplaceMany()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cruel world");
+            m.Remove("l","L");
+
+            Assert.AreEqual("heLLo crueL worLd", m.ToString());
+        }
     }
 }

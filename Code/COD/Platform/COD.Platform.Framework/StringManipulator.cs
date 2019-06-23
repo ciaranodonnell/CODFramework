@@ -146,6 +146,10 @@ namespace COD.Platform.Framework
                                 section.Length = foundAt - section.Start;
                                 if (section.Length == 0) emptynodes.Add(node);
                                 isFinding = false;
+                                if (replaceWith != null)
+                                {
+                                    sections.AddAfter(node, new Section(replaceWith, 0, replaceWith.Length));
+                                }
                             }
                             else
                             {
@@ -191,7 +195,11 @@ namespace COD.Platform.Framework
 
                             //trim end of previous node
                             node.Previous.Value.Length -= charsInFirstSection;
-
+                            if(replaceWith!= null)
+                            {
+                                sections.AddBefore(node, new Section(replaceWith, 0, replaceWith.Length));
+                            }
+                            isFinding = false;
                         }
                         else
                         {
