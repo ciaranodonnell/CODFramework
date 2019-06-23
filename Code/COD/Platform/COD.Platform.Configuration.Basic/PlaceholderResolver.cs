@@ -46,9 +46,9 @@ namespace COD.Platform.Configuration.Basic
                 //Get First Completed PlaceHolder
                 var firstEnd = sb.IndexOf(END);
                 var matchingStart = sb.LastIndexOf(START, firstEnd);
-                
+
                 //TODO: Finish this implementation
-                var newKey = sb.Replace()
+                //var newKey = sb.Replace();
 
             
 

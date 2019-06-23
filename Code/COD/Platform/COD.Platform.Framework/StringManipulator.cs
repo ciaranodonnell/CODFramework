@@ -58,7 +58,7 @@ namespace COD.Platform.Framework
 
                     if (positionsSoFar >= position) break;
 
-                } while (node.Next != null);
+                } while ((node = node.Next) != null);
 
                 if (positionsSoFar > position)
                 {
@@ -94,6 +94,111 @@ namespace COD.Platform.Framework
                 }
             }
 
+        }
+
+        public void Remove(string value, string replaceWith = "")
+        {
+            int foundLetters = 0;
+            bool isFinding = false;
+            int globalIndexOf = -1;
+            int sectionsToGoBack = 0;
+
+            var node = this.sections.First;
+            while (node != null)
+            {
+                var section = node.Value;
+
+                var foundAt = section.Start;
+                var sbase = section.Base;
+
+                if (!isFinding)
+                {
+                    foundLetters = 0;
+                    foundAt = section.Start;
+
+                    if ((foundAt = sbase.IndexOf(value[0], foundAt, section.Length)) > -1)
+                    {
+                        //found the first character so starting looping through to find the rest
+                        isFinding = true;
+                        foundLetters++;
+                        while (isFinding
+                            && foundLetters < value.Length
+                            && (foundAt + foundLetters) < section.Start + section.Length)
+                        {
+                            if (sbase[foundAt + foundLetters] != value[foundLetters])
+                            {
+                                //swing and a miss. 
+                                isFinding = false;
+                                foundLetters = 0;
+                                foundAt++;
+                                break;
+                            }
+
+                            foundLetters++;
+                        }
+                        if (isFinding)
+                        {
+                            if (foundLetters == value.Length)
+                            {
+                                var newStart = (foundAt + foundLetters);
+                                sections.AddAfter(node, new Section(section.Base, newStart, section.Length - newStart));
+                                section.Length = foundAt - section.Start;
+                            }
+                            else
+                            {
+                                //must be crossing a section boundary
+                                sectionsToGoBack = 1;
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    int pointerInThisSection = section.Start;
+                    while (isFinding
+                            && foundLetters < value.Length
+                            && (pointerInThisSection) < section.Length )
+                    {
+                        if (sbase[section.Start + pointerInThisSection] != value[foundLetters])
+                        {
+                            //swing and a miss. 
+                            isFinding = false;
+                            foundLetters = 0;
+                            foundAt++;
+                            break;
+                        }
+                        pointerInThisSection++;
+                        foundLetters++;
+                    }
+                    if (isFinding)
+                    {
+                        if (foundLetters == value.Length)
+                        {
+                            //trim the beginning of this sections
+                            section.Start += pointerInThisSection;
+                            section.Length -= pointerInThisSection;
+
+                            int charsInFirstSection = foundLetters - pointerInThisSection;
+                            for (int x = 1; x < sectionsToGoBack; x++)
+                            {
+                                charsInFirstSection -= node.Previous.Value.Length;
+                                sections.Remove(node.Previous);
+                            }
+
+                            //trim end of previous node
+                            node.Previous.Value.Length -= charsInFirstSection;
+
+                        }
+                        else
+                        {
+                            //must be crossing a section boundary
+                            sectionsToGoBack += 1;
+                        }
+                    }
+                }
+                node = node.Next;
+            }
         }
 
         public override string ToString()
@@ -148,7 +253,7 @@ namespace COD.Platform.Framework
             public int Length { get; set; }
 
             public String Base { get; set; }
-            public int Start { get; private set; }
+            public int Start { get; set; }
 
             public override string ToString()
             {

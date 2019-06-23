@@ -41,5 +41,29 @@ namespace COD.Platform.Framework.UnitTest
             Assert.AreEqual("hello cruel world", m.ToString());
         }
 
+
+        [TestMethod]
+        public void Test_StringManipulator_RemoveSingleStringAcrossTwoSections()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cr");
+            m.Add("uel world");
+            m.Remove("cruel");
+
+            Assert.AreEqual("hello  world", m.ToString());
+        }
+
+        [TestMethod]
+        public void Test_StringManipulator_RemoveSingleStringAcrossThreeSections()
+        {
+            StringManipulator m = new StringManipulator();
+            m.Add("hello cr");
+            m.Add("u");
+            m.Add("el world");
+            m.Remove("cruel");
+
+            Assert.AreEqual("hello  world", m.ToString());
+        }
+
     }
 }
