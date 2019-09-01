@@ -22,7 +22,7 @@ namespace COD.Platform.Logging.CODLogzio
                 NLogProper.LogLevel minLevel, maxLevel;
                 string value;
                 minLevel = (value = config.GetString("LOGGING_LOGZIO_MINLEVEL")) == null ? NLogProper.LogLevel.Error : NLogProper.LogLevel.FromString(value);
-                maxLevel = (value = config.GetString("LOGGING_LOGZIO_MAZLEVEL")) == null ? NLogProper.LogLevel.Fatal : NLogProper.LogLevel.FromString(value);
+                maxLevel = (value = config.GetString("LOGGING_LOGZIO_MAXLEVEL")) == null ? NLogProper.LogLevel.Fatal : NLogProper.LogLevel.FromString(value);
 
 
                 nlogConfig.AddRule(minLevel, maxLevel, "Logzio");

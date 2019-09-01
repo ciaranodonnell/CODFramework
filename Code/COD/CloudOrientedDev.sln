@@ -81,7 +81,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "COD.Platform.Logging.Logzio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "COD.Platform.Messaging.EventGrid", "Platform\COD.Platform.Messaging.EventGrid\COD.Platform.Messaging.EventGrid.csproj", "{BC9D861C-7D43-4F56-AD07-5AC77BFD7CE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COD.Platform.DataAccess.UnitTests", "Platform\COD.Platform.DataAccess.UnitTests\COD.Platform.DataAccess.UnitTests.csproj", "{34A40235-939E-47B2-B29D-2BE6597D1DFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "COD.Platform.DataAccess.UnitTests", "Platform\COD.Platform.DataAccess.UnitTests\COD.Platform.DataAccess.UnitTests.csproj", "{34A40235-939E-47B2-B29D-2BE6597D1DFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kinesis", "Kinesis", "{C37C8C5A-ADF9-4614-8F35-871C3DDF4304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COD.Platform.Messaging.Kinesis", "Platform\COD.Platform.Messaging.Kinesis\COD.Platform.Messaging.Kinesis.csproj", "{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -193,6 +197,10 @@ Global
 		{34A40235-939E-47B2-B29D-2BE6597D1DFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A40235-939E-47B2-B29D-2BE6597D1DFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A40235-939E-47B2-B29D-2BE6597D1DFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +244,8 @@ Global
 		{F46B44F6-CB03-401F-B364-466B2E78121C} = {6B326568-D100-41AD-BFC2-88F956AB6293}
 		{BC9D861C-7D43-4F56-AD07-5AC77BFD7CE5} = {BF6C506E-9F7E-4B99-9D3E-CC8BB3D1F348}
 		{34A40235-939E-47B2-B29D-2BE6597D1DFE} = {02EAF0E3-000C-4FCF-8AE5-778555F5DF4E}
+		{C37C8C5A-ADF9-4614-8F35-871C3DDF4304} = {4CA34E08-F32B-4049-98C9-3E3F5A1FAE84}
+		{5AC2A442-1F87-4EC4-B9A3-CFF984E059F0} = {C37C8C5A-ADF9-4614-8F35-871C3DDF4304}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5334E18B-E39C-4312-9D2B-0DE05C738CF4}

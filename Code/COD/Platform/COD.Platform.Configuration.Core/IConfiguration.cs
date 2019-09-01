@@ -9,8 +9,8 @@ namespace COD.Platform.Configuration.Core
     public interface IConfiguration
     {
         string GetString(string key, string defaultValue= null);
-        bool GetBool(string name, bool defaultValue=false);
-        int GetInt32(string name, int defaultValue=0);
-        string GetStringOrError(string configKey_MessagingPassword);
+        bool GetBool(string key, bool defaultValue=false);
+        int GetInt32(string key, int defaultValue=0);
+        string GetStringOrError(string key);
     }
 }
