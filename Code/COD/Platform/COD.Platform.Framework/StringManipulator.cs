@@ -152,7 +152,7 @@ namespace COD.Platform.Framework
             {
                 var section = node.Value;
 
-              // if (section.Length == 0) continue;
+                // if (section.Length == 0) continue;
 
                 var foundAt = section.Start;
                 var sbase = section.Base;
@@ -165,7 +165,8 @@ namespace COD.Platform.Framework
                     try
                     {
                         foundAt = sbase.IndexOf(value[0], foundAt, section.Length);
-                    }catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         ex.ToString();
                     }
@@ -174,7 +175,7 @@ namespace COD.Platform.Framework
                         //found the first character so starting looping through to find the rest
                         isFinding = true;
                         foundLetters++;
-                        
+
                         //keep search till a character mismatch or the end of the section
                         while (isFinding
                             && foundLetters < value.Length
@@ -192,7 +193,7 @@ namespace COD.Platform.Framework
 
                             foundLetters++;
                         }
-                        
+
                         //if isFinding then it was end of section or found it all
                         if (isFinding)
                         {
@@ -200,22 +201,23 @@ namespace COD.Platform.Framework
                             if (foundLetters == value.Length)
                             {
                                 var newStart = (foundAt + foundLetters);
-                                if (newStart < section.Length)
+                                var newLength = section.Length - (newStart - section.Start);
+                                if (newLength > 0)
                                 {
-                                    sections.AddAfter(node, new Section(section.Base, newStart, section.Length - newStart));
-                                 
-                      
+                                    sections.AddAfter(node, new Section(section.Base, newStart, newLength));
+
+
                                 }
-                                
-                                   section.Length = foundAt - section.Start;
-                                
+
+                                section.Length = foundAt - section.Start;
+
                                 if (section.Length == 0)
                                 {
                                     if (node.Previous == null)
                                     {
                                         //this was the first node
                                         sections.RemoveFirst();
-                                        
+
                                         if (!string.IsNullOrEmpty(replaceWith))
                                         {
                                             //insert new stuff to the beginning, the loop will move us past it
@@ -285,7 +287,7 @@ namespace COD.Platform.Framework
                             //trim the beginning of this sections
                             section.Start += pointerInThisSection;
                             section.Length -= pointerInThisSection;
-                            if (section.Length == 0) emptynodes.Add(node);
+
                             int charsInFirstSection = foundLetters - pointerInThisSection;
                             for (int x = 1; x < sectionsToGoBack; x++)
                             {
@@ -305,7 +307,7 @@ namespace COD.Platform.Framework
                             {
                                 node.Previous.Value.Length -= charsInFirstSection;
                             }
-                            
+
 
                         }
                         else
@@ -365,10 +367,10 @@ namespace COD.Platform.Framework
                 if (!isFinding)
                 {
                     foundLetters = 0;
-                    foundAt = section.Start + (Math.Max(startIndex- stringPassedInPreviousSections,0));
-                    
+                    foundAt = section.Start + (Math.Max(startIndex - stringPassedInPreviousSections, 0));
+
                     if (
-                        (foundAt < sbase.Length) 
+                        (foundAt < sbase.Length)
                         &&
                         (foundAt = sbase.IndexOf(value[0], foundAt, (section.Length - (foundAt - section.Start)))) > -1
                        )

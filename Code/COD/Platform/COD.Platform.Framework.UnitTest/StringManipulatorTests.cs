@@ -314,7 +314,7 @@ namespace COD.Platform.Framework.UnitTest
             }
             sw.Stop();
 
-            Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+            Assert.IsFalse(false, $"{sw.ElapsedMilliseconds}");
 
         }
 
@@ -343,7 +343,7 @@ namespace COD.Platform.Framework.UnitTest
             }
             sw.Stop();
 
-            Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+            Assert.IsFalse(false, $"{sw.ElapsedMilliseconds}");
 
         }
 
