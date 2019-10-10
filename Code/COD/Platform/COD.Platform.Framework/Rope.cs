@@ -39,14 +39,26 @@ namespace COD.Platform.Framework
                 else
                 {
                     var leftLen = Left.Length;
-                    if (index < leftLen)
-                        return Left[index];
+                    var totalLen = leftLen + RightLength();
+                    if (index < totalLen)
+                    {
+                        if (index < leftLen)
+                            return Left[index];
+                        else
+                            return Right[index - leftLen];
+                    }
                     else
-                        return Right[index - leftLen];
+                    {
+                        throw new IndexOutOfRangeException($"The index is longer than the rope length ({totalLen})");
+                    }
                 }
             }
         }
 
+        private int RightLength()
+        {
+            return Right == null ? 0 : Right.Length;
+        }
 
         public int Length
         {
@@ -151,7 +163,14 @@ namespace COD.Platform.Framework
                 }
                 else
                 {
-                    Right.Insert(value, position - leftLen);
+                    if (Right == null)
+                    {
+                        Right = new Rope(value);
+                    }
+                    else
+                    {
+                        Right.Insert(value, position - leftLen);
+                    }
                 }
             }
 
@@ -205,7 +224,7 @@ namespace COD.Platform.Framework
                 else
                 {
                     Right.Remove(start - leftLen, length);
-                 
+
                 }
                 if (Right?.Length == 0)
                     Right = null;
@@ -223,7 +242,7 @@ namespace COD.Platform.Framework
             return this;
         }
 
-        public Rope Replace(string valueToRemove, string replacementValue, int startIndex=0)
+        public Rope Replace(string valueToRemove, string replacementValue, int startIndex = 0)
         {
 
             if (string.IsNullOrEmpty(valueToRemove)) throw new ArgumentException("Value must be a string with non-zero length");
@@ -246,24 +265,37 @@ namespace COD.Platform.Framework
                 if (seekAheadIndex == valueLength)
                 {
                     Remove(currentSearchIndex, valueLength);
+                    //the string is now shorter so the last find position comes down
+                    lastSearchIndex -= valueLength;
+
                     if (replacementValue != null)
                     {
                         Insert(replacementValue, currentSearchIndex);
+                        //need to start searching after what we inserted incase it matches the valueToRemove, we'd replace infinitely
                         currentSearchIndex += skipReplacementIncrement;
+                        //also we made the string longer so the last search position moves out again
+                        lastSearchIndex += replacementValue.Length;
+
                     }
+
+                    //we removed the letter we were on, therefore we need to rewind a character to handle two consecutive matches
+                    currentSearchIndex--;
                 }
 
             }
-                       
+
             return this;
         }
 
         public string Substring(int start, int length)
         {
+            StringBuilder sb = new StringBuilder(length);
+            WriteToStringBuilder(sb, start, length);
 
-            return string.Empty;
+            return sb.ToString();
         }
 
+     
 
         public int IndexOf(string value, int startIndex = 0)
         {
@@ -299,7 +331,7 @@ namespace COD.Platform.Framework
             return sb.ToString();
         }
 
-        private void WriteToStringBuilder(StringBuilder sb)
+        private void WriteToStringBuilder(StringBuilder sb, int start = 0)
         {
             if (IsLeaf) sb.Append(Leaf?.ToString());
             else
@@ -308,6 +340,30 @@ namespace COD.Platform.Framework
                 Right?.WriteToStringBuilder(sb);
             }
 
+        }
+
+        private void WriteToStringBuilder(StringBuilder sb, int start, int length)
+        {
+            if (IsLeaf)
+            {
+                sb.Append(Leaf.Base.Substring(Leaf.Start + start, length));
+            }
+            else
+            {
+                var leftLen = Left.Length;
+                if (start < leftLen)
+                {
+                    var lenInLeft = Math.Min(leftLen - start, length);
+                    Left.WriteToStringBuilder(sb, start, lenInLeft);
+                    if (lenInLeft < length)
+                        Right.WriteToStringBuilder(sb, 0, length - lenInLeft);
+                }
+                else
+                {
+                    Right.WriteToStringBuilder(sb, start - leftLen, length);
+
+                }
+            }
         }
 
         class LeafSection
