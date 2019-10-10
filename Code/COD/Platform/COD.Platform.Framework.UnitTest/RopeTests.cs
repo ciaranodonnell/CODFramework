@@ -7,21 +7,69 @@ using System.Text;
 namespace COD.Platform.Framework.UnitTest
 {
     [TestClass]
-    public class StringManipulatorTests
+    public class RopeTests
     {
         [TestInitialize]
         public void TestInit()
         {
             //remove assembly loading from test timing
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
 
         }
+
+
+
+        [TestMethod]
+        public void Test_Rope_ConstructedWithString()
+        {
+            Rope m = new Rope("hello");
+
+            Assert.AreEqual("hello", m.ToString());
+        }
+
+
+
+        [TestMethod]
+        public void Test_Rope_RemoveStartLength_SingleAppend()
+        {
+            Rope m = new Rope();
+            m.Append("hello");
+            m.Remove(1, 2);
+            Assert.AreEqual("hlo", m.ToString());
+        }
+
+        [TestMethod]
+        public void Test_Rope_RemoveStartLength_AcrossTwoAppends()
+        {
+            Rope m = new Rope();
+            m.Append("hello");
+            m.Append(" world");
+            m.Remove(1, 6);
+            Assert.AreEqual("horld", m.ToString());
+        }
+        [TestMethod]
+        public void Test_Rope_RemoveStartLength_BeginningOfSection()
+        {
+            Rope m = new Rope();
+            m.Append("hello");
+            m.Remove(0, 2);
+            Assert.AreEqual("llo", m.ToString());
+        }
+        [TestMethod]
+        public void Test_Rope_RemoveStartLength_EndOfSection()
+        {
+            Rope m = new Rope();
+            m.Append("hello");
+            m.Remove(3, 2);
+            Assert.AreEqual("hel", m.ToString());
+        }
+
 
 
         [TestMethod]
         public void Test_StringManipulator_AddString()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello");
 
             Assert.AreEqual("hello", m.ToString());
@@ -31,11 +79,22 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_AddTwoStrings()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello");
             m.Append(" world");
 
             Assert.AreEqual("hello world", m.ToString());
+        }
+        [TestMethod]
+        public void Test_StringManipulator_AddThreeStrings()
+        {
+            Rope m = new Rope();
+            m.Append("hello");
+            m.Append(" cruel");
+            m.Append(" world");
+
+            Assert.AreEqual("hello cruel world", m.ToString());
+            Assert.AreEqual("hello cruel world".Length, m.Length);
         }
 
 
@@ -43,7 +102,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_InsertString()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello");
             m.Append("  world");
             m.Insert("cruel", 6);
@@ -53,7 +112,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeFirstSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("world");
             m.Remove("hello ");
@@ -64,7 +123,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeMidSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("cruel ");
             m.Append("world");
@@ -76,7 +135,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeLastSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("cruel ");
             m.Append("world");
@@ -88,7 +147,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeLastSectionAndReplace()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("cruel ");
             m.Append("world");
@@ -100,7 +159,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeFirstSectionAndReplace()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("world");
             m.Replace("hello ", "bonjour ");
@@ -111,7 +170,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveWholeMidSectionAndReplace()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append("cruel ");
             m.Append("world");
@@ -123,7 +182,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveMidTextAndReplace()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello");
             m.Append(" cruel ");
             m.Append("world");
@@ -135,7 +194,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_InsertStringInBetweenSections()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello ");
             m.Append(" world");
             m.Insert("cruel", 6);
@@ -146,7 +205,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveSingleStringAcrossTwoSections()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cr");
             m.Append("uel world");
             m.Remove("cruel");
@@ -157,7 +216,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveSingleStringInsideSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cruel world");
             m.Remove("cruel");
 
@@ -168,7 +227,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveTwoStringsInsideSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cruel world");
             m.Remove("l");
 
@@ -178,7 +237,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_RemoveSingleStringAcrossThreeSections()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cr");
             m.Append("u");
             m.Append("el world");
@@ -192,7 +251,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_SubstringSingleSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cruel world");
 
             Assert.AreEqual("cruel", m.Substring(6, 5));
@@ -201,7 +260,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_SubstringMultipleSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -212,7 +271,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfSingleSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -224,7 +283,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfSingleLetter()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -234,7 +293,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfString()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -243,7 +302,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfStringAcrossSections()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -252,7 +311,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfStringInSecondSections()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -263,7 +322,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfStringStartIndex()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -272,7 +331,7 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfStringStartIndexInLaterSection()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
@@ -281,77 +340,17 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_IndexOfStringStartIndexInLaterSectionNotFound()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cru");
             m.Append("el world");
 
             Assert.AreEqual("hello cruel world".IndexOf("k", 7), m.IndexOf("k", 7));
         }
 
-
-
-        [TestMethod]
-        public void TestTiming()
-        {
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            StringBuilder sb = new StringBuilder();
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Append("Hello ");
-            }
-
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Insert(50, "World");
-            }
-
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Replace("Hello ", "Hey ");
-            }
-            sw.Stop();
-
-            Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
-
-        }
-
-
-        [TestMethod]
-        public void TestTimingSM()
-        {
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            var sb = new StringManipulator();
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Append("Hello ");
-            }
-
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Insert("World",50);
-            }
-
-            for (int x = 0; x < 1000; x++)
-            {
-                sb.Replace("Hello ", "Hey ");
-            }
-            sw.Stop();
-
-            Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
-
-        }
-
-
         [TestMethod]
         public void Test_StringManipulator_ReplaceSingle()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cruel world");
             m.Replace("cruel", "big");
 
@@ -362,11 +361,72 @@ namespace COD.Platform.Framework.UnitTest
         [TestMethod]
         public void Test_StringManipulator_ReplaceMany()
         {
-            StringManipulator m = new StringManipulator();
+            Rope m = new Rope();
             m.Append("hello cruel world");
-            m.Replace("l","L");
+            m.Replace("l", "L");
 
             Assert.AreEqual("heLLo crueL worLd", m.ToString());
         }
+
+        /*
+
+                [TestMethod]
+                public void TestTiming()
+                {
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    StringBuilder sb = new StringBuilder();
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Append("Hello ");
+                    }
+
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Insert(50, "World");
+                    }
+
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Replace("Hello ", "Hey ");
+                    }
+                    sw.Stop();
+
+                    Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+
+                }
+
+
+                [TestMethod]
+                public void TestTimingSM()
+                {
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    var sb = new Rope();
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Append("Hello ");
+                    }
+
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Insert("World", 50);
+                    }
+
+                    for (int x = 0; x < 1000; x++)
+                    {
+                        sb.Replace("Hello ", "Hey ");
+                    }
+                    sw.Stop();
+
+                    Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+
+                }
+
+            */
     }
 }
