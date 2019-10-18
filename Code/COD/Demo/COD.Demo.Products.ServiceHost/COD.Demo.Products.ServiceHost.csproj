@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Platform\COD.Platform.Configuration.Basic\COD.Platform.Configuration.Basic.csproj" />
+    <ProjectReference Include="..\..\Platform\COD.Platform.Configuration.Core\COD.Platform.Configuration.csproj" />
+    <ProjectReference Include="..\..\Platform\COD.Platform.Logging.MockLogging\COD.Platform.Logging.MockLogging.csproj" />
+    <ProjectReference Include="..\..\Platform\COD.Platform.ServiceHosting\COD.Platform.ServiceHosting.csproj" />
+    <ProjectReference Include="..\COD.Demo.Products.Service\COD.Demo.Products.Service.csproj" />
+  </ItemGroup>
+
+</Project>

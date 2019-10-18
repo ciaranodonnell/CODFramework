@@ -6,6 +6,13 @@ namespace COD.Platform.Framework
 {
     public class Rope
     {
+
+        int LeftLengthCache = 0;
+        int RightLengthCache = 0;
+        private Rope _Right;
+        Rope _Left = null;
+
+
         public Rope()
         {
 
@@ -16,17 +23,62 @@ namespace COD.Platform.Framework
 
             Leaf = new LeafSection(value, 0, value.Length);
         }
-        Rope _Left = null;
-        private Rope Left { get { return _Left; } set { if (value != null) Leaf = null; _Left = value; } }
-        private Rope Right { get; set; }
 
+        private Rope Left
+        {
+            get { return _Left; }
+            set
+            {
+                _Left = value;
+                if (value != null)
+                {
+                    Leaf = null;
+                    value.LengthChangedAction = this.LengthChangedHandler;
+                    this.LeftLengthCache = value?.Length ?? 0;
+                }
+                else
+                {
+                    LeftLengthCache = 0;
+                }
+
+                LengthChangedAction?.Invoke(this, Length);
+            }
+        }
+        private Rope Right
+        {
+            get { return _Right; }
+            set
+            {
+                this._Right = value;
+                if (value != null)
+                {
+                    value.LengthChangedAction = this.LengthChangedHandler;
+                    this.RightLengthCache = value.Length;
+                }
+                else
+                {
+                    RightLengthCache = 0;
+                }
+
+                LengthChangedAction?.Invoke(this, Length);
+            }
+        }
 
         private LeafSection Leaf { get; set; }
 
 
         public bool IsLeaf { get { return Left == null; } }
 
-
+        Action<Rope, int> __LengthChangedAction;
+        private Action<Rope, int> LengthChangedAction
+        {
+            get { return __LengthChangedAction; }
+            set
+            {
+                __LengthChangedAction = value;
+                value?.Invoke(this, Length);
+            }
+        }
 
 
 
@@ -38,14 +90,17 @@ namespace COD.Platform.Framework
                     return Leaf[index];
                 else
                 {
-                    var leftLen = Left.Length;
+                    var leftLen = LeftLength();
                     var totalLen = leftLen + RightLength();
                     if (index < totalLen)
                     {
                         if (index < leftLen)
                             return Left[index];
                         else
+                        {
+                            if (Right == null) throw new IndexOutOfRangeException();
                             return Right[index - leftLen];
+                        }
                     }
                     else
                     {
@@ -55,22 +110,42 @@ namespace COD.Platform.Framework
             }
         }
 
+        public (Rope, Rope) Split(int indexToSplitAt)
+        {
+            Rope other = new Rope();
+
+
+
+
+            return (this, other);
+        }
+
+
+
+
+
         private int RightLength()
         {
-            return Right == null ? 0 : Right.Length;
+            return RightLengthCache;
+            //return Right == null ? 0 : Right.Length;
+        }
+        private int LeftLength()
+        {
+            return LeftLengthCache;
+            //return Left == null ? 0 : Left.Length;
         }
 
         public int Length
         {
             get
             {
-                if (Left == null)
+                if (IsLeaf)
                 {
                     return Leaf?.Length ?? 0;
                 }
                 else
                 {
-                    return Left.Length + (Right?.Length ?? 0);
+                    return LeftLength() + RightLength();
 
                 }
             }
@@ -79,48 +154,39 @@ namespace COD.Platform.Framework
 
         public Rope Append(string value)
         {
-            if (IsLeaf)
-            {
-                if (Leaf != null)
-                {
-                    Left = new Rope { Leaf = Leaf };
-                    Right = new Rope(value);
-                }
-                else
-                {
-                    this.Leaf = new LeafSection(value);
-                }
-            }
-            else
-            {
-                if (this.Left == null)
-                {
-                    Left = new Rope { Leaf = Leaf };
-                }
-                if (Right == null)
-                {
-                    Right = new Rope(value);
-                }
-                else
-                {
-                    Right.Append(value);
-                }
-            }
+            Append(new Rope(value));
             return this;
         }
+
+
+
+        private void LengthChangedHandler(Rope sender, int newLength)
+        {
+            if (Object.Equals(sender, Left)) LeftLengthCache = newLength;
+            if (Object.Equals(sender, Right)) RightLengthCache = newLength;
+            LengthChangedAction?.Invoke(this, LeftLengthCache + RightLengthCache);
+        }
+
         public Rope Append(Rope value)
         {
-            if (this.Left == null)
+            if (IsLeaf)
             {
-                Left = new Rope { Leaf = Leaf };
+                Left = new Rope { Leaf = Leaf, LengthChangedAction = LengthChangedHandler };
             }
             if (Right == null)
             {
+
                 Right = value;
             }
             else
             {
-                Right.Append(value);
+                Rope newTop = new Rope { Left = Left, Right = Right };
+                newTop.Left.LengthChangedAction = newTop.LengthChangedHandler;
+                newTop.Right.LengthChangedAction = newTop.LengthChangedHandler;
+                newTop.LengthChangedAction = LengthChangedHandler;
+                Left = newTop;
+                value.LengthChangedAction = LengthChangedHandler;
+                Right = value;
             }
             return this;
         }
@@ -132,31 +198,31 @@ namespace COD.Platform.Framework
                 if (position == 0)
                 {
                     //Insert before this
-                    Right = new Rope { Leaf = Leaf };
-                    Left = new Rope(value);
+                    Right = new Rope { Leaf = Leaf, LengthChangedAction = LengthChangedHandler };
+                    Left = new Rope(value) { LengthChangedAction = LengthChangedHandler };
                 }
                 else if (position == Length)
                 {
                     //Insert after this
-                    Left = new Rope { Leaf = Leaf };
-                    Right = new Rope(value);
+                    Left = new Rope { Leaf = Leaf, LengthChangedAction = LengthChangedHandler };
+                    Right = new Rope(value) { LengthChangedAction = LengthChangedHandler };
                 }
                 else
                 {
                     //its in the middle of this bit
                     var newLeft = new Rope();
                     var newLeftLen = position;
-                    newLeft.Left = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start, newLeftLen) };
-                    newLeft.Right = new Rope(value);
+                    newLeft.Left = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start, newLeftLen), LengthChangedAction = LengthChangedHandler };
+                    newLeft.Right = new Rope(value) { LengthChangedAction = LengthChangedHandler };
                     var newRightStart = Leaf.Start + newLeftLen;
-                    Right = new Rope { Leaf = new LeafSection(Leaf.Base, newRightStart, Leaf.Length - newRightStart) };
+                    Right = new Rope { Leaf = new LeafSection(Leaf.Base, newRightStart, Leaf.Length - newRightStart), LengthChangedAction = LengthChangedHandler };
                     Left = newLeft;
 
                 }
             }
             else
             {
-                var leftLen = Left.Length;
+                var leftLen = LeftLength();
                 if (position < leftLen)
                 {
                     Left.Insert(value, position);
@@ -165,7 +231,7 @@ namespace COD.Platform.Framework
                 {
                     if (Right == null)
                     {
-                        Right = new Rope(value);
+                        Right = new Rope(value) { LengthChangedAction = LengthChangedHandler };
                     }
                     else
                     {
@@ -192,8 +258,8 @@ namespace COD.Platform.Framework
                 if (start + length < Leaf.Length)
                 {
                     //need to split the leaf into left and right
-                    var newRight = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start + start + length, Leaf.Length - (start + length)) };
-                    var newLeft = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start, start) };
+                    var newRight = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start + start + length, Leaf.Length - (start + length)), LengthChangedAction = LengthChangedHandler };
+                    var newLeft = new Rope { Leaf = new LeafSection(Leaf.Base, Leaf.Start, start), LengthChangedAction = LengthChangedHandler };
                     this.Right = newRight;
                     this.Left = newLeft;
 
@@ -210,10 +276,11 @@ namespace COD.Platform.Framework
                     //need to remove the end 
                     Leaf.Length = start;
                 }
+                LengthChangedAction?.Invoke(this, Length);
             }
             else
             {
-                var leftLen = Left.Length;
+                var leftLen = LeftLength();
                 if (start < leftLen)
                 {
                     var lenInLeft = Math.Min(leftLen - start, length);
@@ -237,8 +304,8 @@ namespace COD.Platform.Framework
                 }
 
             }
-
-
+            
+            
             return this;
         }
 
@@ -518,7 +585,7 @@ namespace COD.Platform.Framework
             }
             else
             {
-                var leftLen = Left.Length;
+                var leftLen = LeftLength();
                 if (start < leftLen)
                 {
                     var lenInLeft = Math.Min(leftLen - start, length);
@@ -552,7 +619,7 @@ namespace COD.Platform.Framework
             {
                 get
                 {
-                    if (index > Length || index < 0) throw new IndexOutOfRangeException($"Index must be between 0 and Length ({Length})");
+                    if (index > Length || index < 0) throw new IndexOutOfRangeException($"Index ({index}) must be between 0 and Length ({Length})");
                     return Base[Start + index];
                 }
             }
