@@ -253,8 +253,7 @@ namespace COD.Platform.Framework.UnitTest
         {
             Rope m = new Rope();
             m.Append("hello cruel world");
-
-            Assert.AreEqual("cruel", m.Substring(6, 5));
+           Assert.AreEqual("cruel", m.Substring(6, 5));
         }
 
         [TestMethod]
@@ -368,7 +367,7 @@ namespace COD.Platform.Framework.UnitTest
             Assert.AreEqual("heLLo crueL worLd", m.ToString());
         }
 
-        /*
+        
 
                 [TestMethod]
                 public void TestTiming()
@@ -399,34 +398,69 @@ namespace COD.Platform.Framework.UnitTest
                 }
 
 
-                [TestMethod]
-                public void TestTimingSM()
-                {
+        [TestMethod]
+        public void TestTimingSM()
+        {
 
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
-                    var sb = new Rope();
-                    for (int x = 0; x < 1000; x++)
-                    {
-                        sb.Append("Hello ");
-                    }
+            var sb = new Rope();
+            for (int x = 0; x < 100; x++)
+            {
+                sb.Append("Hello ");
+            }
 
-                    for (int x = 0; x < 1000; x++)
-                    {
-                        sb.Insert("World", 50);
-                    }
+            for (int x = 0; x < 100; x++)
+            {
+                sb.Insert("World", 50);
+            }
 
-                    for (int x = 0; x < 1000; x++)
-                    {
-                        sb.Replace("Hello ", "Hey ");
-                    }
-                    sw.Stop();
+            for (int x = 0; x < 100; x++)
+            {
+                sb.Replace("Hello ", "Hey ");
+            }
+            sw.Stop();
 
-                    Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+            Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
 
-                }
+        }
 
-            */
+        [TestMethod]
+        public void TestTimingSMDebug()
+        {
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            var sb = new Rope();
+            for (int x = 0; x < 4; x++)
+            {
+                sb.Append("Hello ");
+            }
+
+            Assert.AreEqual("Hello Hello Hello Hello ", sb.ToString());
+
+            for (int x = 0; x < 2; x++)
+            {
+                sb.Insert("World", 10);
+            }
+
+            Assert.AreEqual("Hello HellWorldWorldo Hello Hello ", sb.ToString());
+
+
+            for (int x = 0; x < 2; x++)
+            {
+                sb.Replace("Hello ", "Hey ");
+            }
+            sw.Stop();
+
+            Assert.AreEqual("Hey HellWorldWorldo Hey Hey ", sb.ToString());
+
+          //  Assert.IsFalse(true, $"{sw.ElapsedMilliseconds}");
+
+        }
+
+
     }
 }
