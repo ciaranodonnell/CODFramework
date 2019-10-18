@@ -287,6 +287,174 @@ namespace COD.Platform.Framework
             return this;
         }
 
+
+
+        class PreviousReplaceResults
+        {
+            public bool DidEndWithChars;
+            public int CharsLeftToFind;
+            public int LengthCovered;
+            internal List<Action> DoReplaceCommands = new List<Action>();
+
+            internal void ResetToNoMatch()
+            {
+                CharsLeftToFind = 0; 
+                DidEndWithChars = false; 
+                DoReplaceCommands.Clear();
+            }
+        }
+
+        private PreviousReplaceResults OneTouchReplace(string valueToRemove, string replacementValue, int startIndex, PreviousReplaceResults previous)
+        {
+
+
+            if (IsLeaf)
+            {
+                //Skip sections till we find the right first section
+                if (previous.LengthCovered + Leaf.Length < startIndex)
+                {
+                    previous.LengthCovered += Leaf.Length;
+                    return previous;
+                }
+
+                int currentSearchIndex = Math.Max(0, startIndex - previous.LengthCovered);
+                int valueLength = valueToRemove.Length;
+                int skipReplacementIncrement = replacementValue == null ? 0 : replacementValue.Length - 1;
+
+
+                for (; currentSearchIndex <= Leaf.Length; currentSearchIndex++)
+                {
+                    var seekAheadIndex = 0;
+
+                    //If continuing from last section adjust counters
+                    if (previous.DidEndWithChars)
+                    {
+                        seekAheadIndex = valueLength - previous.CharsLeftToFind;
+                        currentSearchIndex = 0 - seekAheadIndex;
+                    }
+                    bool didMatch = false;
+                    while (
+                         (currentSearchIndex + seekAheadIndex < Leaf.Length)
+                      && seekAheadIndex < valueLength
+
+                      )
+                    {
+                        if (valueToRemove[seekAheadIndex] == this[currentSearchIndex + seekAheadIndex])
+                        {
+                            seekAheadIndex++;
+                            didMatch = true;
+                        }
+                        else
+                        {
+                            didMatch = false;
+                            break;
+                        }
+                    }
+
+                    //ended on a match
+                    if (didMatch)
+                    {
+
+                        if (seekAheadIndex == valueLength)
+                        {
+                            //this means we found the end of the match
+
+                            if (previous.DidEndWithChars)
+                            {
+                                //This is harder as we need to remove the end of the last section and the beginning of this one. 
+                                foreach (var cmd in previous.DoReplaceCommands) cmd();
+                                Remove(0, previous.CharsLeftToFind);
+                            }
+                            else
+                            {
+                                //this means we found it entirely in our string
+                                Remove(currentSearchIndex, valueLength);
+
+
+                                if (replacementValue != null)
+                                {
+                                    Insert(replacementValue, currentSearchIndex);
+                                    //need to start searching after what we inserted incase it matches the valueToRemove, we'd replace infinitely
+                                    currentSearchIndex += skipReplacementIncrement;
+
+
+                                }
+                                //we removed the letter we were on, therefore we need to rewind a character to handle two consecutive matches
+                                currentSearchIndex--;
+                            }
+                        }
+
+
+
+                        if (seekAheadIndex > 0
+                            && (currentSearchIndex + seekAheadIndex == Leaf.Length)
+                            )
+                        {
+
+                            if (previous.DidEndWithChars)
+                            {
+                                //this means we found the middle of a match
+                                previous.DoReplaceCommands.Add(() => Remove(0, Length));
+
+                            }
+                            else
+                            {
+
+                                //we were starting to finding it and ran out of string in this leaf
+                                previous.DidEndWithChars = true;
+                                previous.CharsLeftToFind = valueLength - seekAheadIndex;
+
+                                var start =currentSearchIndex;
+                                var len = Leaf.Length - currentSearchIndex;
+                                previous.DoReplaceCommands.Add(() =>
+                               {
+                                   //this means we found it entirely in our string
+                                   this.TrimEnd(len);
+                                   if (replacementValue != null) this.Append(replacementValue);
+                               });
+                            }
+                        }
+
+                    }
+                    else
+                    {
+
+                        previous.ResetToNoMatch();
+                    }
+
+
+                    if (previous.DidEndWithChars)
+                    {
+                        //reset counters as no longer continuing from last sections
+                        seekAheadIndex = 0;
+                        currentSearchIndex = 1;
+                        previous.DidEndWithChars = false;
+                    }
+
+                } // end for
+                return previous;
+            }
+            else
+            {
+                var results = Left.OneTouchReplace(valueToRemove, replacementValue, startIndex, previous);
+                if (Right != null)
+                {
+
+                    results = Right.OneTouchReplace(valueToRemove, replacementValue, startIndex, results);
+                }
+                return results;
+
+            }
+
+
+        }
+
+        private void TrimEnd(int length)
+        {
+            if (length > Leaf.Length) throw new ArgumentOutOfRangeException($"Cant trim more characters ({length}) than are in the string ({Leaf.Length}).");
+            this.Leaf.Length -= length;
+        }
+
         public string Substring(int start, int length)
         {
             StringBuilder sb = new StringBuilder(length);
@@ -295,7 +463,7 @@ namespace COD.Platform.Framework
             return sb.ToString();
         }
 
-     
+
 
         public int IndexOf(string value, int startIndex = 0)
         {
